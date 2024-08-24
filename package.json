@@ -1,0 +1,71 @@
+{
+  "name": "reactjs-vite-tailwindcss-auth-page",
+  "description": "This is a boilerplate build with Vite, React 18, TypeScript, Vitest, Testing Library, TailwindCSS 3, Eslint and Prettier.",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "author": {
+    "name": "naxida-eth",
+    "email": "ck3261937664@gmail.com",
+    "url": "https://github.com/naxida-eth"
+  },
+  "bugs": {
+    "url": "https://github.com/naxida-eth/reactjs-vite-tailwindcss-auth-page/issues",
+    "email": "ck3261937664@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite --mode location",
+    "start:dev": "vite --mode development",
+    "start:test": "vite --mode test",
+    "start:pre": "vite --mode production",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build  --mode test",
+    "build:test": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build  --mode test",
+    "build:dev": "cross-env MINIFY=false NODE_OPTIONS=--max-old-space-size=4096 vite build  --mode development",
+    "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "serve": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint src --max-warnings=0",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@vkruglikov/react-telegram-web-app": "^2.1.9",
+    "ahooks": "^3.8.0",
+    "cross-env": "^7.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-google-login": "^5.2.2",
+    "react-router": "^6.24.1",
+    "react-router-dom": "^6.23.1",
+    "sepolia": "^1.0.0",
+    "tomo-tg-wallet-sdk": "^0.4.8",
+    "viem": "^2.20.0",
+    "wagmi": "^2.12.7"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^14.3.1",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@vitest/ui": "^1.6.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-tailwindcss": "^3.17.0",
+    "happy-dom": "^12.10.3",
+    "postcss": "^8.4.38",
+    "prettier": "3.1.1",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.6.0"
+  }
+}
