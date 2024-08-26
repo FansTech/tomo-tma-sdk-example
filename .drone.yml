@@ -1,0 +1,38 @@
+kind: pipeline
+type: docker
+name: tomo-tma-sdk-example
+steps:   
+  - name: build  app
+    image: node:20.12.2-bullseye
+    commands:
+      - pwd
+      - node -v
+      - npm install -g pnpm
+      - pnpm install
+      - pnpm run build
+      - ls -al ./dist
+    when:
+      event:
+        - push
+      branch:
+        - main
+
+  - name: upload-s3-main
+    image: plugins/s3
+    settings:
+      bucket: tomo.tma.sdk.example
+      access_key:
+        from_secret: aws_tomo_access_key
+      secret_key:
+        from_secret: aws_tomo_secret_key
+      region: us-west-1
+      source: dist/**/*
+      target: /
+      strip_prefix: dist/
+      acl: bucket-owner-full-control
+      cache-control: public,max-age=600,s-maxage=3600
+    when:
+      event:
+        - push
+      branch:
+        - main
