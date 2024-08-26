@@ -2,6 +2,11 @@ import App from 'App'
 import { createRoot } from 'react-dom/client'
 import 'tailwindcss/tailwind.css'
 import 'index.css'
+import buffer from 'buffer'
+
+;(globalThis as any).Buffer = buffer.Buffer
+
+console.log('Buffer', (globalThis as any).Buffer)
 
 const container = document.getElementById('root') as HTMLDivElement
 const root = createRoot(container)

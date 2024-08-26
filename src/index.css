@@ -1,3 +1,17 @@
 body {
   font-family: 'IBM Plex Sans', sans-serif;
 }
+
+input {
+  border: 1px solid;
+}
+
+button {
+  border: 1px solid;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+select {
+  border: 1px solid;
+}

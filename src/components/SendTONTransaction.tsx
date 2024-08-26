@@ -27,13 +27,17 @@ const SendTONTransaction = () => {
   })
 
   const handleSendTONToken = () => {
+    // const buffer = TonWeb.utils.base64ToBytes('te6cckEBAgEAhgABaw+KfqWXDcIDid9F5DmJaAgA7zuZAqJxsqAciTilI8/iTnGEeq62piAAHtRKd6wOcJwQLBuBAwEAlSWThWGADIcuhJdhIY/G9oqIUPwWMzgmabsumBSobWk11V4L7cBHLh/BADrQUlob5CopCCoy2VR6qpx6Ku18Ww2Kw37uzAUOHGKs0NM2J1c=')
+    // const memo = TonWeb.boc.Cell.oneFromBoc(buffer)
+    const memo = `${Date.now()}`
+
     sendTONLoadingFn(async () => {
       const res = await sendTonTransaction({
         fromAddress: `${tonAddress}`,
         publicKey: `${tonPublicKey}`,
         value: parseUnits(inputCount || '0', tonDecimals),
         toAddress: toAddress,
-        memo: `${Date.now()}`,
+        memo: memo,
         token: {
           chainId: mockTonChainId,
           image:

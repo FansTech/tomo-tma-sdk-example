@@ -1,19 +1,20 @@
+import { useLoading } from 'hooks/useLoading'
 import * as React from 'react'
 import { useMemo, useState } from 'react'
-import { erc20Abi, formatUnits, Hex, parseUnits, zeroAddress } from 'viem'
-import { useReadContract } from 'wagmi'
-import { useLoading } from '../hooks/useLoading'
 import {
   useBalance,
   useBuildSwapTx,
   useChains,
   useConfig,
   useSendTransaction,
-  useSwapTokens,
-  useTomoUserInfo
+  useTomoUserInfo,
+  useSwapTokens
 } from 'tomo-tg-wallet-sdk'
-import { mockSolEvmChainId } from './SendSOLANATransaction'
 import { ISwapTokenType } from 'tomo-tg-wallet-sdk/dist/hooks/useSwapTokens'
+
+import { erc20Abi, formatUnits, Hex, parseUnits, zeroAddress } from 'viem'
+import { useReadContract } from 'wagmi'
+import { mockSolEvmChainId } from './SendSOLANATransaction'
 
 const SwapTokens = () => {
   const { chains, swapChainIds, getChain, getChainId } = useChains()
@@ -166,55 +167,63 @@ const SwapTokens = () => {
 
   const onSwap = () => {
     loadingFn(async () => {
-      if (!data) {
-        return
-      }
+      try {
+        if (!data) {
+          return
+        }
 
-      const toAddress = data.transaction.to
-      const value = data.transaction.value
-      const fromChainId = getChainId(fromChain)
-      const contractData = data.transaction.data
+        const to = data.transaction.to ?? toAddress
+        const value = data.transaction.value
+        const fromChainId = getChainId(fromChain)
+        const contractData = data.transaction.data
 
-      switch (fromChain?.type) {
-        case 'EVM':
-          sendEVMTransaction({
-            chainId: fromChainId,
-            fromAddress: fromAddress,
-            toAddress: toAddress,
-            value: BigInt(value),
-            config,
-            tokenValue: parseUnits(inputCount || '0', 18),
-            token: {
-              chainId: Number(fromChainId),
-              image: fromToken?.imageUrl || '',
-              name: fromToken?.name || '',
-              symbol: fromToken?.symbol || '',
-              decimals: fromToken?.decimals || 18,
-              address: (fromToken?.address || zeroAddress) as Hex
-            },
-            data: contractData,
-            historyType: 'Swap'
-          })
-          break
-        case 'SOL':
-          sendSolTransaction({
-            fromAddress: fromAddress,
-            toAddress: toAddress,
-            value: BigInt(value),
-            // contract: ,
-            token: {
-              chainId: mockSolEvmChainId,
-              image: fromToken?.imageUrl || '',
-              name: fromToken?.name || '',
-              symbol: fromToken?.symbol || '',
-              decimals: fromToken?.decimals || 18,
-              address: (fromToken?.address || zeroAddress) as Hex
-            },
-            historyType: 'Swap'
-          })
-          break
-        default:
-          break
+        const res = await (() => {
+          switch (fromChain?.type) {
+            case 'EVM':
+              return sendEVMTransaction({
+                chainId: fromChainId,
+                fromAddress: fromAddress,
+                toAddress: to,
+                value: BigInt(value),
+                config,
+                tokenValue: parseUnits(inputCount || '0', 18),
+                token: {
+                  chainId: Number(fromChainId),
+                  image: fromToken?.imageUrl || '',
+                  name: fromToken?.name || '',
+                  symbol: fromToken?.symbol || '',
+                  decimals: fromToken?.decimals || 18,
+                  address: (fromToken?.address || zeroAddress) as Hex
+                },
+                data: contractData,
+                historyType: 'Swap'
+              })
+            case 'SOL':
+              return sendSolTransaction({
+                fromAddress: fromAddress,
+                toAddress: toAddress,
+                value: parseUnits(inputCount || '0', fromToken?.decimals || 18),
+                data: JSON.parse(data.origin_data),
+                token: {
+                  chainId: mockSolEvmChainId,
+                  image: fromToken?.imageUrl || '',
+                  name: fromToken?.name || '',
+                  symbol: fromToken?.symbol || '',
+                  decimals: fromToken?.decimals || 18,
+                  address: (fromToken?.address || zeroAddress) as Hex
+                },
+                historyType: 'Swap'
+              })
+            default:
+              break
+          }
+        })()
+
+        console.log(res)
+      } catch (error) {
+        console.warn({
+          error
+        })
       }
     })
   }
@@ -237,30 +246,36 @@ const SwapTokens = () => {
         const fromChainId = getChainId(fromChain)
         const contractData = data.transaction.approve_data
 
-        switch (fromChain?.type) {
-          case 'EVM':
-            sendEVMTransaction({
-              chainId: fromChainId,
-              fromAddress: fromAddress,
-              toAddress: toAddress,
-              value: BigInt(value),
-              config,
-              tokenValue: BigInt(value),
-              token: {
-                chainId: Number(fromChainId),
-                image: fromToken?.imageUrl || '',
-                name: fromToken?.name || '',
-                symbol: fromToken?.symbol || '',
-                decimals: fromToken?.decimals || 18,
-                address: (fromToken?.address || zeroAddress) as Hex
-              },
-              data: contractData,
-              historyType: 'Approve'
-            })
-            break
-          default:
-            break
-        }
+        const res = await (() => {
+          switch (fromChain?.type) {
+            case 'EVM':
+              return sendEVMTransaction({
+                chainId: fromChainId,
+                fromAddress: fromAddress,
+                toAddress: toAddress,
+                value: BigInt(value),
+                config,
+                tokenValue: BigInt(value),
+                token: {
+                  chainId: Number(fromChainId),
+                  image: fromToken?.imageUrl || '',
+                  name: fromToken?.name || '',
+                  symbol: fromToken?.symbol || '',
+                  decimals: fromToken?.decimals || 18,
+                  address: (fromToken?.address || zeroAddress) as Hex
+                },
+                data: contractData,
+                historyType: 'Approve'
+              })
+              break
+            default:
+              break
+          }
+        })()
+
+        console.log({
+          res
+        })
       })
     } catch (error) {
       setApproveLoading(false)
@@ -314,7 +329,11 @@ const SwapTokens = () => {
           onChange={(e) => {
             const [chain, address] = e.target.value.split(',')
             const token = toTokens.find((token) => {
-              return token.chain === chain && (token?.address || '' === address)
+              return (
+                token.chain === chain &&
+                (token?.address?.toLocaleUpperCase() || '') ===
+                  address.toLocaleUpperCase()
+              )
             })
 
             token && setFromToken(token)
@@ -401,7 +420,11 @@ const SwapTokens = () => {
           onChange={(e) => {
             const [chain, address] = e.target.value.split(',')
             const token = toTokens.find((token) => {
-              return token.chain === chain && (token?.address || '' === address)
+              return (
+                token.chain === chain &&
+                (token?.address?.toLocaleUpperCase() || '') ===
+                  address.toLocaleUpperCase()
+              )
             })
 
             token && setToToken(token)

@@ -14,7 +14,6 @@ import TelegramActions from 'components/TelegramActions'
 import TransactionActions from 'components/TransactionActions'
 import Transactions from 'components/Transactions'
 import UserInfoActions from 'components/UserInfoActions'
-import React from 'react'
 import { TomoProvider } from 'tomo-tg-wallet-sdk'
 
 const Home = () => {
