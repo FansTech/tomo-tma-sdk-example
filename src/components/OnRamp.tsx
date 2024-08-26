@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { TokenInfo, useOnRamp, useOnRampTokens } from 'tomo-tg-wallet-sdk'
+import { TokenType, useOnRamp, useUserTokens } from 'tomo-tg-wallet-sdk'
 
 const OnRamp = () => {
-  const { tokens } = useOnRampTokens()
+  const { tokens } = useUserTokens()
 
-  const [token, setToken] = React.useState<TokenInfo>()
+  const [token, setToken] = React.useState<TokenType>()
   const [rampType, setRampType] = React.useState<'ramp' | 'mercuryo'>('ramp')
   const [type, setType] = React.useState<'buy' | 'sell'>('buy')
 

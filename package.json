@@ -39,7 +39,7 @@
     "react-router": "^6.24.1",
     "react-router-dom": "^6.23.1",
     "sepolia": "^1.0.0",
-    "tomo-tg-wallet-sdk": "^0.5.0",
+    "tomo-tg-wallet-sdk": "^0.6.0",
     "viem": "^2.20.0",
     "vite-plugin-node-polyfills": "^0.22.0",
     "wagmi": "^2.12.7"

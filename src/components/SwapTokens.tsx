@@ -175,6 +175,7 @@ const SwapTokens = () => {
         const to = data.transaction.to ?? toAddress
         const value = data.transaction.value
         const fromChainId = getChainId(fromChain)
+        const toChainId = getChainId(toChain)
         const contractData = data.transaction.data
 
         const res = await (() => {
@@ -195,6 +196,14 @@ const SwapTokens = () => {
                   decimals: fromToken?.decimals || 18,
                   address: (fromToken?.address || zeroAddress) as Hex
                 },
+                toToken: {
+                  chainId: Number(toChainId),
+                  image: toToken?.imageUrl || '',
+                  name: toToken?.name || '',
+                  symbol: toToken?.symbol || '',
+                  decimals: toToken?.decimals || 18,
+                  address: (toToken?.address || zeroAddress) as Hex
+                },
                 data: contractData,
                 historyType: 'Swap'
               })
@@ -211,6 +220,14 @@ const SwapTokens = () => {
                   symbol: fromToken?.symbol || '',
                   decimals: fromToken?.decimals || 18,
                   address: (fromToken?.address || zeroAddress) as Hex
+                },
+                toToken: {
+                  chainId: Number(toChainId),
+                  image: toToken?.imageUrl || '',
+                  name: toToken?.name || '',
+                  symbol: toToken?.symbol || '',
+                  decimals: toToken?.decimals || 18,
+                  address: (toToken?.address || zeroAddress) as Hex
                 },
                 historyType: 'Swap'
               })

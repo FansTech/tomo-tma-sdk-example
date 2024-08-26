@@ -39,8 +39,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       tomo-tg-wallet-sdk:
-        specifier: ^0.5.0
-        version: 0.5.0(@tanstack/query-core@5.52.0)(@ton/crypto@3.3.0)(@types/react@18.3.3)(bufferutil@4.0.8)(expo@51.0.31(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.4.5)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.18.0)(typescript@5.4.5)(utf-8-validate@5.0.10)
+        specifier: ^0.6.0
+        version: 0.6.0(@tanstack/query-core@5.52.0)(@ton/crypto@3.3.0)(@types/react@18.3.3)(bufferutil@4.0.8)(expo@51.0.31(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.4.5)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.18.0)(typescript@5.4.5)(utf-8-validate@5.0.10)
       viem:
         specifier: ^2.20.0
         version: 2.20.0(bufferutil@4.0.8)(typescript@5.4.5)(utf-8-validate@5.0.10)
@@ -6266,8 +6266,8 @@ packages:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
 
-  tomo-tg-wallet-sdk@0.5.0:
-    resolution: {integrity: sha512-kTdPYPrUirOqk029/kfPVLUyVDUPMTS2hiobGGQIJkAqunWtYyXZQCWQuARpMUEXo0VB66fXg0gBDcBiURU8OQ==}
+  tomo-tg-wallet-sdk@0.6.0:
+    resolution: {integrity: sha512-fe7dUvzcM3MOMGsb5oVsGybYAQgYl/wYntoLPSi3Uk2ORmDLVQh+53aFzSY4NtSYGtKvOfCnk9+RpoWZk0B3PA==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
@@ -15016,7 +15016,7 @@ snapshots:
 
   toidentifier@1.0.1: {}
 
-  tomo-tg-wallet-sdk@0.5.0(@tanstack/query-core@5.52.0)(@ton/crypto@3.3.0)(@types/react@18.3.3)(bufferutil@4.0.8)(expo@51.0.31(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.4.5)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.18.0)(typescript@5.4.5)(utf-8-validate@5.0.10):
+  tomo-tg-wallet-sdk@0.6.0(@tanstack/query-core@5.52.0)(@ton/crypto@3.3.0)(@types/react@18.3.3)(bufferutil@4.0.8)(expo@51.0.31(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@5.0.10))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.4.5)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.18.0)(typescript@5.4.5)(utf-8-validate@5.0.10):
     dependencies:
       '@orbs-network/ton-access': 2.3.3
       '@ramp-network/ramp-instant-sdk': 4.0.5

@@ -14,6 +14,7 @@ import TelegramActions from 'components/TelegramActions'
 import TransactionActions from 'components/TransactionActions'
 import Transactions from 'components/Transactions'
 import UserInfoActions from 'components/UserInfoActions'
+import UserTokens from 'components/UserTokens'
 import { TomoProvider } from 'tomo-tg-wallet-sdk'
 
 const Home = () => {
@@ -39,6 +40,7 @@ const Home = () => {
       <Balance />
       <SwapTokens />
       <OnRamp />
+      <UserTokens />
     </TomoProvider>
   )
 }
