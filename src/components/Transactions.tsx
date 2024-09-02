@@ -10,7 +10,7 @@ const Transactions = () => {
       const intKey = Number(key) as IChainId
       return transactions[intKey]
     })
-    .filter((item) => !!item)
+    ?.filter((item) => !!item)
     .flat()
     // .filter(item => item.historyType === 'Swap')
     .sort((a, b) => {
