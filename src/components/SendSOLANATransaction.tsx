@@ -1,18 +1,17 @@
-import * as React from 'react'
-import { useState } from 'react'
-import { parseUnits, zeroAddress } from 'viem'
-import { useLoading } from '../hooks/useLoading'
-import { useSendTransaction, useTomoUserInfo } from 'tomo-tg-wallet-sdk'
-
+import * as React from 'react';
+import { useState } from 'react';
+import {useSendTransaction} from 'tomo-tg-wallet-sdk';
+import {useTomoUserInfo} from 'tomo-tg-wallet-sdk';
+import { parseUnits, zeroAddress } from 'viem';
+import { useLoading } from './useLoading';
 export const mockSolEvmChainId = 501
 export const solDecimals = 9
-
 const SendSOLANATransaction = () => {
-  const [inputCount, setInputCount] = useState<string>()
-  const [toAddress, setToAddress] = useState<string>()
-  const { solAddress } = useTomoUserInfo()
-  const { sendSolTransaction } = useSendTransaction()
-  const [sendLoading, sendLoadingFn] = useLoading()
+  const [inputCount, setInputCount] = useState<string>();
+  const [toAddress, setToAddress] = useState<string>();
+  const { solAddress } = useTomoUserInfo();
+  const { sendSolTransaction } = useSendTransaction();
+  const [sendLoading, sendLoadingFn] = useLoading();
 
   const handleSendToken = () => {
     sendLoadingFn(async () => {
@@ -27,11 +26,11 @@ const SendSOLANATransaction = () => {
           name: 'solana',
           symbol: 'SOL',
           decimals: solDecimals,
-          address: zeroAddress
-        }
-      })
-    })
-  }
+          address: zeroAddress,
+        },
+      });
+    });
+  };
 
   return (
     <div>
@@ -45,7 +44,7 @@ const SendSOLANATransaction = () => {
             <input
               value={toAddress}
               type="text"
-              onChange={(e) => setToAddress(e.target.value)}
+              onChange={e => setToAddress(e.target.value)}
             />
           </p>
           <p>
@@ -53,7 +52,7 @@ const SendSOLANATransaction = () => {
             <input
               value={inputCount}
               type="text"
-              onChange={(e) => setInputCount(e.target.value)}
+              onChange={e => setInputCount(e.target.value)}
             />
           </p>
           <button disabled={sendLoading} onClick={handleSendToken}>
@@ -62,7 +61,7 @@ const SendSOLANATransaction = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SendSOLANATransaction
+export default SendSOLANATransaction;

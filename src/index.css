@@ -8,10 +8,28 @@ input {
 
 button {
   border: 1px solid;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  /* margin-bottom: 20px; */
+  /* margin-top: 20px; */
 }
 
 select {
   border: 1px solid;
+}
+label{
+  display: inline-block;
+}
+
+.item-value{
+  word-break: break-all;
+}
+.config-row{
+  display: flex;
+  gap:8px;
+}
+.config-row .item-title{
+  width:100px
+}
+.module-title{
+  font-weight: bold;
+  margin-top:10px;
 }

@@ -1,6 +1,4 @@
-import { useLoading } from 'hooks/useLoading'
-import * as React from 'react'
-import { useMemo, useState } from 'react'
+import * as React from 'react';
 import {
   useBalance,
   useBuildSwapTx,
@@ -8,114 +6,121 @@ import {
   useConfig,
   useSendTransaction,
   useTomoUserInfo,
-  useSwapTokens
-} from 'tomo-tg-wallet-sdk'
-import { ISwapTokenType } from 'tomo-tg-wallet-sdk/dist/hooks/useSwapTokens'
-
-import { erc20Abi, formatUnits, Hex, parseUnits, zeroAddress } from 'viem'
-import { useReadContract } from 'wagmi'
-import { mockSolEvmChainId } from './SendSOLANATransaction'
+  useSwapTokens,
+} from 'tomo-tg-wallet-sdk';
+import { useMemo, useState } from 'react';
+import { ISwapTokenType } from 'tomo-tg-wallet-sdk/dist/hooks/useSwapTokens';
+import {
+  erc20Abi,
+  formatUnits,
+  Hex,
+  parseUnits,
+  zeroAddress,
+} from 'viem';
+import { mockSolEvmChainId } from './SendSOLANATransaction';
+import { useReadContract } from 'wagmi';
+import { useLoading } from './useLoading';
 
 const SwapTokens = () => {
-  const { chains, swapChainIds, getChain, getChainId } = useChains()
-  const swapChains = swapChainIds.map((id) => {
-    return getChain(id)
-  })
-  const [fromChain, setFromChain] = React.useState(swapChains[0])
-  const [toChain, setToChain] = React.useState(swapChains[0])
-  const [fromContext, setFromContext] = React.useState('')
-  const [toContext, setToContext] = React.useState('')
-  const [inputCount, setInputCount] = React.useState<string>()
-  const [slippage, setSlippage] = React.useState<string>('10')
-  const { getAddressByChain } = useTomoUserInfo()
-  const { config } = useConfig()
+  const { chains, swapChainIds, getChain, getChainId } = useChains();
+  const swapChains = swapChainIds.map(id => {
+    return getChain(id);
+  });
+  const [fromChain, setFromChain] = React.useState(swapChains[0]);
+  const [toChain, setToChain] = React.useState(swapChains[0]);
+  const [fromContext, setFromContext] = React.useState('');
+  const [toContext, setToContext] = React.useState('');
+  const [inputCount, setInputCount] = React.useState<string>();
+  const [slippage, setSlippage] = React.useState<string>('10');
+  const { getAddressByChain } = useTomoUserInfo();
+  const { config } = useConfig();
 
-  const [fromToken, setFromToken] = useState<ISwapTokenType>()
+  const [fromToken, setFromToken] = useState<ISwapTokenType>();
 
-  const [loading, loadingFn] = useLoading()
-  const [approveLoading, setApproveLoading] = useState(false)
+  const [loading, loadingFn] = useLoading();
+  const [approveLoading, setApproveLoading] = useState(false);
 
-  const { sendEVMTransaction, sendSolTransaction } = useSendTransaction()
+  const { sendEVMTransaction, sendSolTransaction } = useSendTransaction();
 
   const { tokens: fromTokens, loading: fromTokensLoading } = useSwapTokens({
     chain: fromChain,
-    content: fromContext
-  })
+    content: fromContext,
+  });
 
-  const [toToken, setToToken] = useState<ISwapTokenType>()
+  const [toToken, setToToken] = useState<ISwapTokenType>();
 
   const { tokens: toTokens, loading: toTokensLoading } = useSwapTokens({
     chain: toChain,
-    content: toContext
-  })
+    content: toContext,
+  });
 
   const balanceNative = useBalance({
-    chainId: getChainId(fromChain)
-  })
+    chainId: getChainId(fromChain),
+  });
 
   const balance = useBalance({
     chainId: getChainId(fromChain),
-    token: fromToken?.address
-  })
+    token: fromToken?.address,
+  });
 
   const fromAddress =
     getAddressByChain({
       chain: fromChain,
       options: {
-        btcType: 'tr'
-      }
-    }) || zeroAddress
+        btcType: 'tr',
+      },
+    }) || zeroAddress;
 
   const toAddress =
     getAddressByChain({
       chain: toChain,
       options: {
-        btcType: 'tr'
-      }
-    }) || zeroAddress
+        btcType: 'tr',
+      },
+    }) || zeroAddress;
 
   React.useEffect(() => {
     if (!fromToken && fromTokens.length > 0) {
-      setFromToken(fromTokens[0])
+      setFromToken(fromTokens[0]);
     }
     if (!toToken && toTokens.length > 0) {
-      setToToken(toTokens[0])
+      setToToken(toTokens[0]);
     }
-  }, [fromToken, fromTokens, toToken, toTokens])
+  }, [fromToken, fromTokens, toToken, toTokens]);
 
   React.useEffect(() => {
     if (fromChain) {
       if (fromChain.type === 'EVM') {
-        const find = fromTokens.find((token) => {
+        const find = fromTokens.find(token => {
           return (
             token.chain === fromToken?.chain &&
             (token?.address ?? '') === (fromToken?.address ?? '')
-          )
-        })
+          );
+        });
         if (!find) {
-          fromTokens.length > 0 && setFromToken(fromTokens[0])
+          fromTokens.length > 0 && setFromToken(fromTokens[0]);
         }
       }
     }
-  }, [fromChain, fromTokens, fromToken])
+  }, [fromChain, fromTokens, fromToken]);
 
   React.useEffect(() => {
     if (toChain) {
       if (toChain.type === 'EVM') {
-        const find = toTokens.find((token) => {
+        const find = toTokens.find(token => {
           return (
             token.chain === toToken?.chain &&
             (token?.address ?? '') === (toToken?.address ?? '')
-          )
-        })
+          );
+        });
         if (!find) {
-          toTokens.length > 0 && setToToken(toTokens[0])
+          toTokens.length > 0 && setToToken(toTokens[0]);
         }
       }
     }
-  }, [toChain, toTokens, toToken])
+  }, [toChain, toTokens, toToken]);
 
-  const inputAmount = parseUnits(inputCount ?? '0', fromToken?.decimals || 18)
+  const inputAmount = parseUnits(inputCount ?? '0', fromToken?.decimals || 18);
 
   const swapParams = {
     fromChainid: getChainId(fromChain) as number,
@@ -125,27 +130,27 @@ const SwapTokens = () => {
     amount: inputAmount.toString(),
     slippage: Number(slippage ?? 0),
     fromWalletAddress: fromAddress,
-    toWalletAddress: toAddress
-  }
+    toWalletAddress: toAddress,
+  };
 
   const swapQuery = useBuildSwapTx(swapParams, {
-    refetchInterval: approveLoading
-  })
+    refetchInterval: approveLoading,
+  });
 
   const data = useMemo(() => {
     if (swapQuery.data) {
-      return swapQuery.data
+      return swapQuery.data;
     }
-  }, [swapQuery])
+  }, [swapQuery]);
 
   const canSwap =
     !!data &&
     Number(inputCount) < Number(balance.data?.formatted) &&
     Number(balanceNative.data?.formatted) > 0 &&
     !!toToken &&
-    !!fromToken
+    !!fromToken;
 
-  const needCheckAllowance = !!data?.transaction.approve_spender
+  const needCheckAllowance = !!data?.transaction.approve_spender;
 
   const allowance = useReadContract({
     chainId: getChainId(fromChain),
@@ -154,151 +159,286 @@ const SwapTokens = () => {
     functionName: 'allowance',
     args: [fromAddress as Hex, data?.transaction.approve_spender as Hex],
     query: {
-      refetchInterval: approveLoading ? 2000 : false
-    }
-  })
+      refetchInterval: approveLoading ? 2000 : false,
+    },
+  });
 
   const needApprove = data?.transaction.approve_spender
     ? allowance?.data !== undefined
       ? parseUnits(inputCount || '0', fromToken?.decimals || 18) >
         allowance?.data
       : undefined
-    : !!data?.transaction.approve_data && !!data?.transaction.approve_to
+    : !!data?.transaction.approve_data && !!data?.transaction.approve_to;
 
   const onSwap = () => {
     loadingFn(async () => {
       try {
         if (!data) {
-          return
+          return;
         }
 
-        const to = data.transaction.to ?? toAddress
-        const value = data.transaction.value
-        const fromChainId = getChainId(fromChain)
-        const toChainId = getChainId(toChain)
-        const contractData = data.transaction.data
+        const to = data.transaction.to ?? toAddress;
+        const value = data.transaction.value;
+        const fromChainId = getChainId(fromChain);
+        const toChainId = getChainId(toChain);
+        const contractData = data.transaction.data;
 
-        const res = await (() => {
-          switch (fromChain?.type) {
-            case 'EVM':
-              return sendEVMTransaction({
-                chainId: fromChainId,
-                fromAddress: fromAddress,
-                toAddress: to,
-                value: BigInt(value),
-                config,
-                tokenValue: parseUnits(inputCount || '0', 18),
-                token: {
-                  chainId: Number(fromChainId),
-                  image: fromToken?.imageUrl || '',
-                  name: fromToken?.name || '',
-                  symbol: fromToken?.symbol || '',
-                  decimals: fromToken?.decimals || 18,
-                  address: (fromToken?.address || zeroAddress) as Hex
-                },
-                toToken: {
-                  chainId: Number(toChainId),
-                  image: toToken?.imageUrl || '',
-                  name: toToken?.name || '',
-                  symbol: toToken?.symbol || '',
-                  decimals: toToken?.decimals || 18,
-                  address: (toToken?.address || zeroAddress) as Hex
-                },
-                data: contractData,
-                historyType: 'Swap'
-              })
-            case 'SOL':
-              return sendSolTransaction({
-                fromAddress: fromAddress,
-                toAddress: toAddress,
-                value: parseUnits(inputCount || '0', fromToken?.decimals || 18),
-                data: JSON.parse(data.origin_data),
-                token: {
-                  chainId: mockSolEvmChainId,
-                  image: fromToken?.imageUrl || '',
-                  name: fromToken?.name || '',
-                  symbol: fromToken?.symbol || '',
-                  decimals: fromToken?.decimals || 18,
-                  address: (fromToken?.address || zeroAddress) as Hex
-                },
-                toToken: {
-                  chainId: Number(toChainId),
-                  image: toToken?.imageUrl || '',
-                  name: toToken?.name || '',
-                  symbol: toToken?.symbol || '',
-                  decimals: toToken?.decimals || 18,
-                  address: (toToken?.address || zeroAddress) as Hex
-                },
-                historyType: 'Swap'
-              })
-            default:
-              break
-          }
-        })()
-
-        console.log(res)
+        switch (fromChain?.type) {
+          case 'EVM':
+            const res = await sendEVMTransaction({
+              chainId: fromChainId,
+              fromAddress: fromAddress,
+              toAddress: to,
+              value: BigInt(value),
+              config,
+              tokenValue: parseUnits(inputCount || '0', 18),
+              token: {
+                chainId: Number(fromChainId),
+                image: fromToken?.imageUrl || '',
+                name: fromToken?.name || '',
+                symbol: fromToken?.symbol || '',
+                decimals: fromToken?.decimals || 18,
+                address: (fromToken?.address || zeroAddress) as Hex,
+              },
+              toToken: {
+                chainId: Number(toChainId),
+                image: toToken?.imageUrl || '',
+                name: toToken?.name || '',
+                symbol: toToken?.symbol || '',
+                decimals: toToken?.decimals || 18,
+                address: (toToken?.address || zeroAddress) as Hex,
+              },
+              data: contractData,
+              historyType: 'Swap',
+            });
+            console.log({
+              res,
+            });
+            break;
+          case 'SOL':
+            const solRes = await sendSolTransaction({
+              fromAddress: fromAddress,
+              toAddress: toAddress,
+              value: parseUnits(inputCount || '0', fromToken?.decimals || 18),
+              data: JSON.parse(data.origin_data),
+              token: {
+                chainId: mockSolEvmChainId,
+                image: fromToken?.imageUrl || '',
+                name: fromToken?.name || '',
+                symbol: fromToken?.symbol || '',
+                decimals: fromToken?.decimals || 18,
+                address: (fromToken?.address || zeroAddress) as Hex,
+              },
+              toToken: {
+                chainId: Number(toChainId),
+                image: toToken?.imageUrl || '',
+                name: toToken?.name || '',
+                symbol: toToken?.symbol || '',
+                decimals: toToken?.decimals || 18,
+                address: (toToken?.address || zeroAddress) as Hex,
+              },
+              historyType: 'Swap',
+            });
+            console.log({
+              solRes,
+            });
+            break;
+          default:
+            break;
+        }
       } catch (error) {
         console.warn({
-          error
-        })
+          error,
+        });
       }
-    })
-  }
+    });
+  };
+  const onSwapPassword = () => {
+    const password = prompt('Please enter your password');
+    if (!password) return;
+    loadingFn(async () => {
+      try {
+        if (!data) {
+          return;
+        }
+
+        const to = data.transaction.to ?? toAddress;
+        const value = data.transaction.value;
+        const fromChainId = getChainId(fromChain);
+        const toChainId = getChainId(toChain);
+        const contractData = data.transaction.data;
+
+        switch (fromChain?.type) {
+          case 'EVM':
+            const res = await sendEVMTransaction({
+              mfaType: 'password',
+              password,
+              chainId: fromChainId,
+              fromAddress: fromAddress,
+              toAddress: to,
+              value: BigInt(value),
+              config,
+              tokenValue: parseUnits(inputCount || '0', 18),
+              token: {
+                chainId: Number(fromChainId),
+                image: fromToken?.imageUrl || '',
+                name: fromToken?.name || '',
+                symbol: fromToken?.symbol || '',
+                decimals: fromToken?.decimals || 18,
+                address: (fromToken?.address || zeroAddress) as Hex,
+              },
+              toToken: {
+                chainId: Number(toChainId),
+                image: toToken?.imageUrl || '',
+                name: toToken?.name || '',
+                symbol: toToken?.symbol || '',
+                decimals: toToken?.decimals || 18,
+                address: (toToken?.address || zeroAddress) as Hex,
+              },
+              data: contractData,
+              historyType: 'Swap',
+            });
+            console.log({
+              res,
+            });
+            break;
+          case 'SOL':
+            const solRes = await sendSolTransaction({
+              mfaType: 'password',
+              password,
+              fromAddress: fromAddress,
+              toAddress: toAddress,
+              value: parseUnits(inputCount || '0', fromToken?.decimals || 18),
+              data: JSON.parse(data.origin_data),
+              token: {
+                chainId: mockSolEvmChainId,
+                image: fromToken?.imageUrl || '',
+                name: fromToken?.name || '',
+                symbol: fromToken?.symbol || '',
+                decimals: fromToken?.decimals || 18,
+                address: (fromToken?.address || zeroAddress) as Hex,
+              },
+              toToken: {
+                chainId: Number(toChainId),
+                image: toToken?.imageUrl || '',
+                name: toToken?.name || '',
+                symbol: toToken?.symbol || '',
+                decimals: toToken?.decimals || 18,
+                address: (toToken?.address || zeroAddress) as Hex,
+              },
+              historyType: 'Swap',
+            });
+
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.warn({
+          error,
+        });
+      }
+    });
+  };
 
   React.useEffect(() => {
     if (approveLoading && !needApprove) {
-      setApproveLoading(false)
+      setApproveLoading(false);
     }
-  }, [approveLoading, needApprove])
+  }, [approveLoading, needApprove]);
 
   const onApprove = () => {
     try {
       loadingFn(async () => {
         if (!data) {
-          return
+          return;
         }
-        setApproveLoading(true)
-        const toAddress = data.transaction.approve_to
-        const value = data.transaction.value
-        const fromChainId = getChainId(fromChain)
-        const contractData = data.transaction.approve_data
+        setApproveLoading(true);
+        const toAddress = data.transaction.approve_to;
+        const value = data.transaction.value;
+        const fromChainId = getChainId(fromChain);
+        const contractData = data.transaction.approve_data;
 
-        const res = await (() => {
-          switch (fromChain?.type) {
-            case 'EVM':
-              return sendEVMTransaction({
-                chainId: fromChainId,
-                fromAddress: fromAddress,
-                toAddress: toAddress,
-                value: BigInt(value),
-                config,
-                tokenValue: BigInt(value),
-                token: {
-                  chainId: Number(fromChainId),
-                  image: fromToken?.imageUrl || '',
-                  name: fromToken?.name || '',
-                  symbol: fromToken?.symbol || '',
-                  decimals: fromToken?.decimals || 18,
-                  address: (fromToken?.address || zeroAddress) as Hex
-                },
-                data: contractData,
-                historyType: 'Approve'
-              })
-              break
-            default:
-              break
-          }
-        })()
-
-        console.log({
-          res
-        })
-      })
+        switch (fromChain?.type) {
+          case 'EVM':
+            const res = await sendEVMTransaction({
+              chainId: fromChainId,
+              fromAddress: fromAddress,
+              toAddress: toAddress,
+              value: BigInt(value),
+              config,
+              tokenValue: BigInt(value),
+              token: {
+                chainId: Number(fromChainId),
+                image: fromToken?.imageUrl || '',
+                name: fromToken?.name || '',
+                symbol: fromToken?.symbol || '',
+                decimals: fromToken?.decimals || 18,
+                address: (fromToken?.address || zeroAddress) as Hex,
+              },
+              data: contractData,
+              historyType: 'Approve',
+            });
+            console.log({
+              res,
+            });
+            break;
+          default:
+            break;
+        }
+      });
     } catch (error) {
-      setApproveLoading(false)
+      setApproveLoading(false);
     }
-  }
+  };
+  const onApprovePassword = () => {
+    try {
+      const password = prompt('Please enter your password');
+      if (!password) return;
+      loadingFn(async () => {
+        if (!data) {
+          return;
+        }
+        setApproveLoading(true);
+        const toAddress = data.transaction.approve_to;
+        const value = data.transaction.value;
+        const fromChainId = getChainId(fromChain);
+        const contractData = data.transaction.approve_data;
 
+        switch (fromChain?.type) {
+          case 'EVM':
+            const res = await sendEVMTransaction({
+              mfaType: 'password',
+              password,
+              chainId: fromChainId,
+              fromAddress: fromAddress,
+              toAddress: toAddress,
+              value: BigInt(value),
+              config,
+              tokenValue: BigInt(value),
+              token: {
+                chainId: Number(fromChainId),
+                image: fromToken?.imageUrl || '',
+                name: fromToken?.name || '',
+                symbol: fromToken?.symbol || '',
+                decimals: fromToken?.decimals || 18,
+                address: (fromToken?.address || zeroAddress) as Hex,
+              },
+              data: contractData,
+              historyType: 'Approve',
+            });
+            console.log({
+              res,
+            });
+            break;
+          default:
+            break;
+        }
+      });
+    } catch (error) {
+      setApproveLoading(false);
+    }
+  };
   return (
     <div>
       <h2>SwapTokens</h2>
@@ -307,26 +447,26 @@ const SwapTokens = () => {
         fromChain:
         <select
           name={fromChain?.name}
-          onChange={(e) => {
+          onChange={e => {
             const chain = swapChains.find(
-              (chain) => chain?.name === e.target.value
-            )
-            chain && setFromChain(chain)
+              chain => chain?.name === e.target.value
+            );
+            chain && setFromChain(chain);
           }}
         >
-          {swapChains.map((chain) => {
+          {swapChains.map(chain => {
             return (
               <option key={chain?.name} value={chain?.name}>
                 {chain?.name}
               </option>
-            )
+            );
           })}
         </select>
       </p>
       <p>
         From Wallet Address:
         {getAddressByChain({
-          chain: fromChain
+          chain: fromChain,
         })}
       </p>
       <p>
@@ -334,8 +474,8 @@ const SwapTokens = () => {
         <input
           type="text"
           value={fromContext}
-          onChange={(e) => {
-            setFromContext(e.target.value)
+          onChange={e => {
+            setFromContext(e.target.value);
           }}
         />
       </p>
@@ -343,20 +483,20 @@ const SwapTokens = () => {
         tokens:
         <select
           name={'tokens'}
-          onChange={(e) => {
-            const [chain, address] = e.target.value.split(',')
-            const token = toTokens.find((token) => {
+          onChange={e => {
+            const [chain, address] = e.target.value.split(',');
+            const token = toTokens.find(token => {
               return (
                 token.chain === chain &&
                 (token?.address?.toLocaleUpperCase() || '') ===
                   address.toLocaleUpperCase()
-              )
-            })
+              );
+            });
 
-            token && setFromToken(token)
+            token && setFromToken(token);
           }}
         >
-          {fromTokens?.map((token) => {
+          {fromTokens?.map(token => {
             return (
               <option
                 key={token.id + token.chain + token.address}
@@ -364,7 +504,7 @@ const SwapTokens = () => {
               >
                 {token?.symbol}
               </option>
-            )
+            );
           })}
         </select>
       </p>
@@ -380,8 +520,8 @@ const SwapTokens = () => {
         <input
           type="text"
           value={inputCount}
-          onChange={(e) => {
-            setInputCount(e.target.value)
+          onChange={e => {
+            setInputCount(e.target.value);
           }}
         />{' '}
         {fromToken?.symbol}
@@ -391,8 +531,8 @@ const SwapTokens = () => {
         <input
           type="text"
           value={slippage}
-          onChange={(e) => {
-            setSlippage(e.target.value)
+          onChange={e => {
+            setSlippage(e.target.value);
           }}
         />
         <span>value: {Number(slippage) / 10} %</span>
@@ -402,20 +542,20 @@ const SwapTokens = () => {
         toChain:
         <select
           name={toChain?.name}
-          onChange={(e) => {
+          onChange={e => {
             const chain = swapChains.find(
-              (chain) => chain?.name === e.target.value
-            )
+              chain => chain?.name === e.target.value
+            );
 
-            chain && setToChain(chain)
+            chain && setToChain(chain);
           }}
         >
-          {swapChains.map((chain) => {
+          {swapChains.map(chain => {
             return (
               <option key={chain?.name} value={chain?.name}>
                 {chain?.name}
               </option>
-            )
+            );
           })}
         </select>
       </p>
@@ -425,8 +565,8 @@ const SwapTokens = () => {
         <input
           type="text"
           value={toContext}
-          onChange={(e) => {
-            setToContext(e.target.value)
+          onChange={e => {
+            setToContext(e.target.value);
           }}
         />
       </p>
@@ -434,20 +574,20 @@ const SwapTokens = () => {
         tokens:
         <select
           name={'tokens'}
-          onChange={(e) => {
-            const [chain, address] = e.target.value.split(',')
-            const token = toTokens.find((token) => {
+          onChange={e => {
+            const [chain, address] = e.target.value.split(',');
+            const token = toTokens.find(token => {
               return (
                 token.chain === chain &&
                 (token?.address?.toLocaleUpperCase() || '') ===
                   address.toLocaleUpperCase()
-              )
-            })
+              );
+            });
 
-            token && setToToken(token)
+            token && setToToken(token);
           }}
         >
-          {toTokens?.map((token) => {
+          {toTokens?.map(token => {
             return (
               <option
                 key={token.id + token.chain + token.address}
@@ -455,7 +595,7 @@ const SwapTokens = () => {
               >
                 {token?.symbol}
               </option>
-            )
+            );
           })}
         </select>
       </p>
@@ -470,17 +610,30 @@ const SwapTokens = () => {
       </p>
       <p>
         {needApprove ? (
-          <button disabled={loading || approveLoading} onClick={onApprove}>
-            approve
-          </button>
+          <>
+            <button disabled={loading || approveLoading} onClick={onApprove}>
+              approve biometry
+            </button>
+            <button
+              disabled={loading || approveLoading}
+              onClick={onApprovePassword}
+            >
+              approve password
+            </button>
+          </>
         ) : (
-          <button disabled={!canSwap || loading} onClick={onSwap}>
-            swap
-          </button>
+          <>
+            <button disabled={!canSwap || loading} onClick={onSwap}>
+              swap biometry
+            </button>
+            <button disabled={!canSwap || loading} onClick={onSwapPassword}>
+              swap password
+            </button>
+          </>
         )}
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default SwapTokens
+export default SwapTokens;

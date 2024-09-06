@@ -1,30 +1,31 @@
-import * as React from 'react'
-import { useState } from 'react'
-import { parseUnits, zeroAddress } from 'viem'
-import { useLoading } from '../hooks/useLoading'
+import * as React from 'react';
+import { useState } from 'react';
+import { parseUnits, zeroAddress } from 'viem';
+import { useLoading } from './useLoading';
 import {
   useBalance,
   useSendTransaction,
-  useTomoUserInfo
+  useTomoUserInfo,
+  // useTonTransactions
 } from 'tomo-tg-wallet-sdk'
-
+// import TonWeb from 'tonweb';
 export const mockTonChainId = 1100
 export const tonDecimals = 9
 
 const SendTONTransaction = () => {
-  const [inputCount, setInputCount] = useState<string>('')
-  const [toAddress, setToAddress] = useState<string>('')
-  const [msgHash, setMsgHash] = useState<string>('')
-  const [txhash, setTxhash] = useState<string>('')
-  const { tonAddress, tonPublicKey } = useTomoUserInfo()
-  const { sendTonTransaction } = useSendTransaction()
-  // const { queryHash } = useTonTransactions()
+  const [inputCount, setInputCount] = useState<string>('');
+  const [toAddress, setToAddress] = useState<string>('');
+  const [msgHash, setMsgHash] = useState<string>('');
+  const [txhash, setTxhash] = useState<string>('');
+  const { tonAddress, tonPublicKey } = useTomoUserInfo();
+  const { sendTonTransaction } = useSendTransaction();
+  // const { queryHash } = useTonTransactions();
 
-  const [sendTONLoading, sendTONLoadingFn] = useLoading()
+  const [sendTONLoading, sendTONLoadingFn] = useLoading();
 
   const balance = useBalance({
-    chainId: mockTonChainId
-  })
+    chainId: mockTonChainId,
+  });
 
   const handleSendTONToken = () => {
     // const buffer = TonWeb.utils.base64ToBytes('te6cckEBAgEAhgABaw+KfqWXDcIDid9F5DmJaAgA7zuZAqJxsqAciTilI8/iTnGEeq62piAAHtRKd6wOcJwQLBuBAwEAlSWThWGADIcuhJdhIY/G9oqIUPwWMzgmabsumBSobWk11V4L7cBHLh/BADrQUlob5CopCCoy2VR6qpx6Ku18Ww2Kw37uzAUOHGKs0NM2J1c=')
@@ -45,16 +46,18 @@ const SendTONTransaction = () => {
           name: 'Toncoin',
           symbol: 'TON',
           decimals: 9,
-          address: zeroAddress
-        }
-      })
-    })
-  }
+          address: zeroAddress,
+        },
+        mfaType: 'password',
+        password: '1234'
+      });
+    });
+  };
 
   const handleQueryTransaction = async () => {
-    // const txhashRes = await queryHash(`${tonAddress}`, msgHash)
-    // setTxhash(txhashRes)
-  }
+    const txhashRes = '' // await queryHash(`${tonAddress}`, msgHash);
+    setTxhash(txhashRes);
+  };
 
   return (
     <div>
@@ -68,7 +71,7 @@ const SendTONTransaction = () => {
             <input
               value={toAddress}
               type="text"
-              onChange={(e) => setToAddress(e.target.value)}
+              onChange={e => setToAddress(e.target.value)}
             />
           </p>
           <p>
@@ -76,7 +79,7 @@ const SendTONTransaction = () => {
             <input
               value={inputCount}
               type="text"
-              onChange={(e) => setInputCount(e.target.value)}
+              onChange={e => setInputCount(e.target.value)}
             />
           </p>
           <button disabled={sendTONLoading} onClick={handleSendTONToken}>
@@ -90,7 +93,7 @@ const SendTONTransaction = () => {
             <input
               value={msgHash}
               type="text"
-              onChange={(e) => setMsgHash(e.target.value)}
+              onChange={e => setMsgHash(e.target.value)}
             />
           </p>
           <p>
@@ -102,7 +105,7 @@ const SendTONTransaction = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SendTONTransaction
+export default SendTONTransaction;

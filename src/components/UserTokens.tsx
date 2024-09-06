@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useUserTokens } from 'tomo-tg-wallet-sdk'
+import {  useUserTokens } from 'tomo-tg-wallet-sdk'
 
 const UserTokens = () => {
   const { tokens } = useUserTokens()
@@ -9,7 +9,7 @@ const UserTokens = () => {
       <h2>UserTokens</h2>
       <div>
         {tokens.map((token, index) => {
-          return <p key={index}>{token.symbol}</p>
+          return <p key={index.toString()}>{token.symbol}</p>
         })}
       </div>
     </div>

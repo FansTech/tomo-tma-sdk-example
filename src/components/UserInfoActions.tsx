@@ -1,14 +1,15 @@
 import * as React from 'react'
 import { useTomo } from 'tomo-tg-wallet-sdk'
+
 export default function UserInfoActions() {
-  const { onLogin, onLogout } = useTomo()
-  const [link, setLink] = React.useState('')
+  const { onLogin, onLogout, onUpdateUserInfo } = useTomo();
+  const [link, setLink] = React.useState('');
 
   const onReset = () => {
-    window.localStorage.clear()
-    window.sessionStorage.clear()
-    window.location.href = window.location.origin
-  }
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    window.location.href = window.location.origin;
+  };
 
   return (
     <div>
@@ -16,28 +17,46 @@ export default function UserInfoActions() {
       <div
         style={{
           display: 'flex',
-          gap: '10px'
+          gap: '10px',
         }}
       >
         <button
           onClick={async () => {
-            setLink(await onLogin())
+            setLink(await onLogin('tomo'));
           }}
         >
-          Login
+          Login By Tomo
+        </button>
+        <button
+          onClick={async () => {
+            await onLogin('telegram');
+          }}
+        >
+          Login By Telegram
         </button>
         <button onClick={onLogout}>Logout</button>
         <button onClick={onReset}>Reset env</button>
+
+        <button
+          onClick={async () => {
+            setLink(await onLogin('tomo', false));
+          }}
+        >
+          Show Tomo Link
+        </button>
         {link && (
           <button
             onClick={() => {
-              window.open(link)
+              window.open(link);
             }}
           >
             Open Telegram
           </button>
         )}
       </div>
+      <button onClick={onUpdateUserInfo}>Update UserInfo</button>
+
+      {link && <div>{link}</div>}
     </div>
-  )
+  );
 }
