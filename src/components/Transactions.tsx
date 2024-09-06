@@ -1,21 +1,22 @@
-import * as React from 'react'
-import { IChainId, useTransactions } from 'tomo-tg-wallet-sdk'
-import { formatUnits } from 'viem'
+import * as React from 'react';
+
+import { IChainId, useTransactions } from 'tomo-tg-wallet-sdk';
+import { formatUnits } from 'viem';
 
 const Transactions = () => {
-  const { transactions } = useTransactions()
+  const { transactions } = useTransactions();
 
   const transactionsRender = Object.keys(transactions)
-    .map((key) => {
-      const intKey = Number(key) as IChainId
-      return transactions[intKey]
+    .map(key => {
+      const intKey = Number(key) as IChainId;
+      return transactions[intKey];
     })
-    ?.filter((item) => !!item)
+    .filter(item => !!item)
     .flat()
     // .filter(item => item.historyType === 'Swap')
     .sort((a, b) => {
-      return b.time - a.time
-    })
+      return b.time - a.time;
+    });
 
   return (
     <div>
@@ -42,10 +43,10 @@ const Transactions = () => {
               </span>
             </p>
           </p>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default Transactions
+export default Transactions;
