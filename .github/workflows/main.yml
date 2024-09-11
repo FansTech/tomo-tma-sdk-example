@@ -6,7 +6,7 @@ on:
     branches: [ "main","dev"]
 
 jobs:
-  feature-pwd-build:
+  main-build:
     if: contains( github.ref, 'main')
     runs-on: ubuntu-latest
     strategy:
