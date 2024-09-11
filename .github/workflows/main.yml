@@ -1,0 +1,34 @@
+name: build tomo-tma-sdk-example
+on:
+  push:
+    branches: [ "main","dev"]
+  pull_request:
+    branches: [ "main","dev"]
+
+jobs:
+  feature-pwd-build:
+    if: contains( github.ref, 'main')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [v20.12.2]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g pnpm 
+    - run: pnpm install
+    - run: pnpm run build
+
+    - name: Deploying application to Amazon S3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --follow-symlinks
+      env:
+        AWS_S3_BUCKET: 'tomo.tma.sdk.example'
+        AWS_ACCESS_KEY_ID: ${{ secrets.PANSW_AWS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.PANSW_AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'us-west-1' 
+        SOURCE_DIR: './dist'
